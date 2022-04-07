@@ -1,0 +1,180 @@
+﻿@page
+@model APSAL.Pages.Comidas.IndexModel
+@{
+    ViewData["Title"] = "Dias";
+}
+
+@section breadcrumb{
+
+    <li class="breadcrumb-item">
+        <a asp-page="./Index">Dias</a>
+    </li>
+
+
+}
+
+@using System.Globalization;
+@using Microsoft.AspNetCore.Http
+@using System;
+@using System.Collections.Generic;
+@using System.IO;
+@using System.Linq;
+@using System.Security.Claims;
+@using System.Threading.Tasks;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+@using Microsoft.Extensions.Configuration;
+@using Refit;
+@inject IHttpContextAccessor httpContextAccessor
+
+
+@{
+    var Roles = ((ClaimsIdentity)User.Identity).Claims.Where(d => d.Type == "Roles").Select(s1 => s1.Value).FirstOrDefault().Split("|");
+}
+
+@section scripts{
+
+
+    <script>
+        $(document).ready(function () {
+            jQuery(document).ready(function ($) {
+
+            });
+
+
+
+            $(document).ready(function () {
+                $('#tablita').DataTable();
+            });
+
+
+        });
+
+
+ 
+ 
+    </script>
+}
+
+<div class="row">
+    <div class="col-md-12   ">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Filtro</h4>
+
+            </div>
+            <div class="card-body">
+                <form method="get">
+                    <div class="row">
+                        <div class="col-sm-4 pr-1">
+                            <div class="form-group">
+                                <label>Fecha Inicial</label>
+                                <input class="form-control" id="FecInicial" type="date" asp-for="filtro.FechaInicial">
+                            </div>
+
+
+                        </div>
+
+                        <div class="col-sm-4 pr-1">
+                            <div class="form-group">
+                                <label>Fecha Final</label>
+                                <input class="form-control" id="FecFinal" type="date" asp-for="filtro.FechaFinal">
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 pl-1">
+
+                        </div>
+
+                        <div class="col-sm-12">
+                            <br />
+                        </div>
+
+
+                        <div class="col-sm-6 pr-1">
+                        </div>
+                        <div class="col-sm-6 pl-1" style="text-align: right;">
+                            <button title="Buscar" type="submit" class="btn btn-rounded btn-outline-primary"> <i class="fas fa-search"></i></button>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5>Listado de Dias</h5>
+                    </div>
+                    <div class="col-md-4">
+                      
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered first">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Dia</th>
+                                <th>Mes</th>
+                                <th>Año</th>
+                                <th>Observaciones</th>
+
+                                <th>Acción</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Objeto)
+                            {
+                            <tr>
+                                <td>@item.id</td>
+                                <td>@item.Dia</td>
+                                <td>@item.Mes</td>
+                                <td>@item.Anno</td>
+
+                                <td>@item.Observaciones</td>
+
+
+                                <td>
+
+                                    <a asp-page="./Editar" asp-route-id="@item.id" title="Editar" class="btn btn-rounded btn-outline-warning"> Editar Comidas</a> &nbsp;
+                                   
+
+                                </td>
+
+                            </tr>
+                            }
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>ID</th>
+                                <th>Dia</th>
+                                <th>Mes</th>
+                                <th>Año</th>
+                                <th>Observaciones</th>
+
+                                <th>Acción</th>
+
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
