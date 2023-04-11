@@ -1,31 +1,107 @@
 ﻿@page "{id}"
 @model APSAL.Pages.Comidas.EditarModel
 @{
-    ViewData["Title"] = "Roles";
+    ViewData["Title"] = "Comidas por Día";
 }
 @section breadcrumb{
 
     <li class="breadcrumb-item">
-        <a asp-page="./Index">Roles</a>
+        <a asp-page="./Index">Comidas</a>
     </li>
     <li class="breadcrumb-item active">
-        <a>Edición de Rol</a>
+        <a>Comidas por Día</a>
     </li>
 
 }
-@section styles{
+    @using Newtonsoft.Json;
 
+    @section styles{
+
+    <style>
+        .fa {
+            font-size: 12px !important;
+        }
+
+        .lab {
+            font-weight: 400;
+            font-size: 13px;
+        }
+
+        .lab2 {
+            font-weight: 400;
+            font-size: 13px;
+        }
+
+        .label {
+            color: #fff !important;
+            background-color: #57b846 !important;
+            cursor: pointer;
+            text-decoration: underline;
+            background: none;
+            font-size: 17px;
+            padding: 8px 18px !important;
+        }
+
+        .label-submit {
+            color: #fff !important;
+            background-color: #57b846 !important;
+            cursor: pointer;
+            background: none;
+            font-size: 13px;
+            padding: 8px 18px !important;
+        }
+
+
+        #imgGalerias {
+            display: none;
+        }
+
+    </style>
+    <style>
+        #menu {
+            float: left;
+            width: 100%;
+            background-color: #fff;
+        }
+
+            #menu img {
+                width: 12%;
+                margin: 2%;
+                cursor: pointer;
+            }
+
+        #principal {
+            float: left;
+            width: 75%;
+        }
+
+        #visor {
+            width: 60%;
+            margin: 10%
+        }
+
+            #visor img {
+                width: 100%
+            }
+
+        .tableFixHead th {
+            position: sticky;
+            top: 0;
+            background: white;
+        }
+    </style>
 
 }
 
-@section scripts{
+    @section scripts{
 
 
+    <script src="~/js/Comidas/Editar.js"></script>
 
 }
 
-@using System.Globalization;
-@{
+    @using System.Globalization;
+    @{
     NumberFormatInfo formato = new CultureInfo("en-US").NumberFormat;
     formato.CurrencyGroupSeparator = ",";
     formato.NumberDecimalSeparator = ".";
@@ -47,38 +123,163 @@
                         <a asp-page="./Index" class="nav-link text-dark" style="text-decoration: underline;"><i class="fas fa-reply"></i>  Regresar</a>
 
                     </div>
+                    <input id="idDia" hidden asp-for="Dia.id" />
+                    <input id="urlGuardar" hidden value="@Url.Page("Editar", "Generar")" />
+
+                    <input hidden id="Comidas" value="@JsonConvert.SerializeObject(Model.Comidas)" />
+
                 </div>
 
             </div>
+
+        </div>
+
+
+
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h5 class="title">Comida</h5>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="card-body" id="htmlComidas">
+                <div class="row">
+
+                    <div class="col-12" style="text-align: center;">
+                        <div class="form-group">
+                            <center>
+                                <img id="imgPrincipalG" src="/avatar-1.jpg" alt="image" style="width:200px; height:200px;border-radius: 15px;" class="img-fluid" />
+                                <br />
+                                <br />
+
+                                <label style="font-size: 13px;" class="label" for="imgPrincipalUploadG">Subir Imagen</label><input id="imgPrincipalUploadG" accept=".jpg, .png" style="opacity:0; display:none;" type="file" name="imgPrincipalUploadG" />
+
+                                <input type="text" id="Imagen" hidden class="form-control" required>
+
+
+                            </center>
+                        </div>
+
+
+
+
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Descripción</label>
+                            <input id="descripcionComida" class="form-control form-control-lg" />
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Calorías</label>
+                            <input id="caloriasComida" class="form-control form-control-lg" type="number" step="1" />
+
+                        </div>
+                        <button class="btn btn-primary" onclick="javascript: AgregarComida()"> + Agregar Comida</button>
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h5 class="title">Comidas Registradas</h5>
+                    </div>
+
+
+                </div>
+            </div>
+
             <div class="card-body">
-                <form method="post" id="formTipos" role="form" novalidate class="needs-validation " enctype="multipart/form-data">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input hidden asp-for="Dia.id" />
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped table-bordered first">
+                            <thead>
+                                <tr>
 
-                    <div class="row">
-                        <div class="col-md-8 pr-1">
-                            <div class="form-group">
-                                <label>Comentarios</label>
-                                <textarea asp-for="Dia.Observaciones" maxlength="500"></textarea>
-                        
-                            </div>
+                                    <th width="20%">Foto</th>
+
+                                    <th>Descripción</th>
+                                    <th>Calorias</th>
+
+
+                                    <th>Acción</th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyComidas">
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Foto</th>
+
+                                    <th>Descripción</th>
+                                    <th>Calorias</th>
+
+
+                                    <th>Acción</th>
+
+
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card">
+
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8 pr-1">
+                        <div class="form-group">
+                            <label>Comentarios</label>
+                            <textarea id="ObservacionesGenerales" asp-for="Dia.Observaciones" class="form-control form-control-lg" maxlength="500"></textarea>
+
                         </div>
-
                     </div>
 
-
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <button type="submit" id="Guardar" class="btn btn-rounded btn-outline-success">Guardar Cambios</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <button id="btnGuardar" class="btn btn-rounded btn-outline-success" onclick="javascript: Generar()">Guardar Cambios</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <span class="close">×</span>
+
+    <img class="modal-content" id="img01">
+
+
+
+</div>
 
